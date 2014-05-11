@@ -31,13 +31,27 @@
 				$xml->setAttribute('logged-in', 'yes');
 				foreach($info_fields as $f) {
 					extract($f, EXTR_PREFIX_ALL, 'f');
+					$value = $login_info[$f_provider_info_field];
 					if($f_include_in_xml == 'yes') {
-						$xml->appendChild(new XMLElement($f_element_name, $login_info[$f_provider_info_field]));
+						if(gettype($value) != "array" && gettype($value) != "object" && gettype($value) != "NULL") {
+							$xml->appendChild(new XMLElement($f_element_name, $value));
+						}
+						else if(gettype($value) == "array" && gettype($value["formatted"]) == "string") {
+							$xml->appendChild(new XMLElement($f_element_name, $value["formatted"]));
+						}
 					}
 					if($f_create_ds_param == 'yes') {
-						$param_pool['ds-' . $this->dsParamROOTELEMENT . '.' . $f_element_name] = $login_info[$f_provider_info_field];
+						if(gettype($value) != "array" && gettype($value) != "object" && gettype($value) != "NULL") {
+							$param_pool['ds-' . $this->dsParamROOTELEMENT . '.' . $f_element_name] = $value;
+						}
+						else if(gettype($value) == "array" && gettype($value["formatted"]) == "string") {
+							$param_pool['ds-' . $this->dsParamROOTELEMENT . '.' . $f_element_name] = $value["formatted"];
+						}
 					}
 				}
+				/* foreach($login_info as $key => $value) {
+					$xml->appendChild(new XMLElement('RAW_'.$key, serialize($value)));
+				} */
 			}
 			else $xml->setAttribute('logged-in', 'no');
 			return $xml;

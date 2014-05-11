@@ -20,7 +20,7 @@ class eventje_auth extends Event {
 		return false;
 	}
 
-	public function load() {	
+	public function load() {
 		if (isset($_POST['token'])) {
 			$result = $this->__trigger();
 			$xml = new XMLElement('je-auth');
